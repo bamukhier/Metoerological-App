@@ -1,4 +1,7 @@
 # 🌍 Metoerological App
+<p align='center'>
+<img width="600" height="400" src="https://user-images.githubusercontent.com/65918738/209103946-1bf99645-65b3-448f-9e40-d372209d4499.png">
+</p>
 
 This is a simple tool used to track the weather forcasts for user-specified coordinates using the Mateomatics API. It's built with Django, DRF, and React.
 
