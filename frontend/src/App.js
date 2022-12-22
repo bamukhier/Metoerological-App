@@ -2,28 +2,104 @@ import { useState, useEffect } from "react";
 import './App.css';
 import CoordsList from './components/CoordsList'
 import axios from 'axios'
-import { Heading, VStack, useColorMode, Button } from '@chakra-ui/react'
+import { Heading, VStack, useColorMode, Button, useToast } from '@chakra-ui/react'
 import {FaSun, FaMoon} from 'react-icons/fa'
 
 function App() {
  
 const {colorMode, toggleColorMode} = useColorMode()
+const toast = useToast()
+
 const [coords, setCoords] = useState([])
+const [weatherCoords, setWeatherCoords] = useState([])
 
 
 const fetchCoords = async () => {
   try {
-    const { data } = await axios.get('/api/coordinate')
+    const { data } = await axios.get('/api/coords')
     setCoords(data)
   } catch (err) {
     console.log(err)
+    toast({
+        status: 'error',
+        title: 'Encountered an error while fetching data',
+        description: err.message,
+        duration: '5000'
+    })
+  }
+}
+
+const queryURLBuilder = (coords) => {
+  const mateomaticsToken = process.env.REACT_APP_MATEOMATICS_TOKEN
+  const weatherParams = 't_min_2m_24h:C,t_max_2m_24h:C,weather_symbol_24h:idx'
+  const dt = new Date().toISOString()
+  return `https://api.meteomatics.com/${dt}/${weatherParams}/${coords.lat},${coords.long}/json?access_token=${mateomaticsToken}`
+}
+
+const combineAllForcastsWithCoords = responses => {
+  const coordsWithForcasts = responses.map((res, i) => {
+    const coordWithoutWeather = coords[i]
+    const extractedData = {
+      ...coordWithoutWeather,
+      minTemp: res.data.data[0].coordinates[0].dates[0].value,
+      maxTemp: res.data.data[1].coordinates[0].dates[0].value,
+      weatherSymbolNum: res.data.data[2].coordinates[0].dates[0].value,
+    }
+    return extractedData
+  })
+  return coordsWithForcasts
+}
+
+const fetchAllForcasts = async () => {
+  const reqURLs = coords.map(coords => queryURLBuilder(coords))
+  console.log(reqURLs)
+  await Promise.all(reqURLs.map(url => axios.get(url)))
+  .then(function(res){
+    setWeatherCoords(combineAllForcastsWithCoords(res))
+  })
+  .catch(function(err){
+    console.log(err)
+    toast({
+        status: 'error',
+        title: 'Encountered an error while fetching data.',
+        description: err.message,
+        duration: '5000'
+    })
+  })
+}
+
+const combineSingleForcastWithCoords = (coords, res) => {
+  return {
+    ...coords,
+    minTemp: res.data.data[0].coordinates[0].dates[0].value,
+    maxTemp: res.data.data[1].coordinates[0].dates[0].value,
+    weatherSymbolNum: res.data.data[2].coordinates[0].dates[0].value,
+  }
+}
+
+const fetchSingleForcast = async (coords) => {
+  const reqURL = queryURLBuilder(coords)
+  try {
+    const res = await axios.get(reqURL)
+    return combineSingleForcastWithCoords(coords, res)
+    
+  } catch (err) {
+    console.log(err)
+    toast({
+      status: 'error',
+      title: 'Encountered an error while fetching data. Please refresh the page',
+      description: err.message,
+      duration: '5000'
+    })
   }
 }
 
 const addCoords = async newCoords => {
   try {
-    const { data } = await axios.post('api/coordinate/', newCoords)
+    const { data } = await axios.post('api/coords/', newCoords)
     setCoords([...coords, data])
+    const coordWithForcast = await fetchSingleForcast(data)
+    setWeatherCoords([...weatherCoords, coordWithForcast])
   } catch (err) {
     console.log(err)
   }
@@ -31,9 +107,14 @@ const addCoords = async newCoords => {
 
 const updateCoords = async (id, newCoords) => {
   try {
-    const { data } = await axios.put(`api/coordinate/${id}/`, newCoords)
+    const { data } = await axios.put(`api/coords/${id}/`, newCoords)
     const updatedList = coords.map( coord => coord.id !== id ? coord : data)
     setCoords(updatedList)
+    const coordWithForcast = await fetchSingleForcast(data)
+    const updatedForcasts = weatherCoords.map( coord => coord.id !== id ? coord : coordWithForcast)
+    setWeatherCoords(updatedForcasts)
+
+
   } catch (err) {
     console.log(err)
   }
@@ -41,9 +122,11 @@ const updateCoords = async (id, newCoords) => {
 
 const deleteCoords = async id => {
   try {
-    await axios.delete(`api/coordinate/${id}/`)
+    await axios.delete(`api/coords/${id}/`)
     const newCoords = coords.filter(coord => coord.id !== id)
     setCoords(newCoords)
+    const newWeatherCoords = weatherCoords.filter(coord => coord.id !== id)
+    setWeatherCoords(newWeatherCoords)
   } catch (err) {
     console.log(err)
   }
@@ -53,13 +136,20 @@ useEffect( () => {
   fetchCoords()
 }, [])
 
+useEffect( () => {
+  if (coords){
+    fetchAllForcasts()
+  }
+}, [coords])
+
+
   return (
     <>
-    <VStack p={5}>
-      <Button leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />} borderRadius='8px' alignSelf='flex-end' onClick={toggleColorMode}>{colorMode === 'light' ? 'Night Mode' : 'Day Mode'}</Button>
-      <Heading mb='4' fontWeight='extrabold' size='xl' 
+    <VStack p={2}>
+      <Button leftIcon={colorMode === 'light' ? <FaMoon /> : <FaSun />} borderRadius='8px' alignSelf='flex-end' onClick={toggleColorMode}>{colorMode === 'light' ? 'Lights Off' : 'Lights On'}</Button>
+      <Heading mb='8' fontWeight='extrabold' size='xl' 
                         bgGradient='linear(to right, #8360c3, #2ebf91)' bgClip='text'>Meteorological App</Heading>
-    <CoordsList coords={coords} addCoords={addCoords} updateCoords={updateCoords} deleteCoords={deleteCoords}/>
+    <CoordsList coords={weatherCoords} addCoords={addCoords} updateCoords={updateCoords} deleteCoords={deleteCoords}/>
     </VStack>
     </>
 

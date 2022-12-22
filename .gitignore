@@ -2,7 +2,6 @@
 /backend/api/fixtures/cities.json
 /backend/api/fixtures/cities-fixture.json
 .DS_Store
-.env
 */settings/local.py
 /staticfiles/*
 /mediafiles/*

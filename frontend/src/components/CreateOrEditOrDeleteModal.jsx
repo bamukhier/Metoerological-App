@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDisclosure, useToast, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Box, Input } from '@chakra-ui/react'
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 
-const CreateOrEditModal = ({coords, addCoords, deleteMode, updateCoords, deleteCoords}) => {
+const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords, deleteCoords}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast()
     const [latitude, setLatitude] = useState()
@@ -146,4 +146,4 @@ const CreateOrEditModal = ({coords, addCoords, deleteMode, updateCoords, deleteC
   );
 }
 
-export default CreateOrEditModal
+export default CreateOrEditOrDeleteModal
