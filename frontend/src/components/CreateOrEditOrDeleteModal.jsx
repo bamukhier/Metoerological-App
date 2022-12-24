@@ -111,10 +111,10 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
               ? (
                 <>
                 <Box>
-                    latitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={latitude} onChange={(e) => setLatitude(e.target.value)}/>
+                    Latitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={latitude} onChange={(e) => setLatitude(e.target.value)}/>
                 </Box>
-                <Box>
-                    longitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={longitude} onChange={(e) => setLongitude(e.target.value)}/>
+                <Box mt='2'>
+                    Longitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={longitude} onChange={(e) => setLongitude(e.target.value)}/>
                 </Box>
                 </>
               ) : (

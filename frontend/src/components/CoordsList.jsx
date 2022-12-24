@@ -1,23 +1,12 @@
 import React from 'react'
-import { VStack, HStack, Text, StackDivider, Spacer, Badge, Box, Image, Spinner } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import { VStack, HStack, Text, StackDivider, Spacer, Box, LinkBox, LinkOverlay, Image } from "@chakra-ui/react";
 import CreateOrEditOrDeleteModal from './CreateOrEditOrDeleteModal'
-
+import LoadingSpinner from './LoadingSpinner'
 function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
     if (!coords.length){
         return (
-            <Box pt={16} >
-                <Badge p={8} colorScheme='gray' borderRadius='xl'>
-                    <Spinner
-                        thickness='4px'
-                        speed='0.65s'
-                        emptyColor='gray.200'
-                        color='blue.500'
-                        size='xl'
-                    />
-                    <Box><Text mt='4' fontWeight='medium'>Loading...</Text></Box>
-                    
-                </Badge>
-            </Box>
+            <LoadingSpinner />
         )
     }
 
@@ -31,21 +20,29 @@ function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
             {coords.map( coord => {
                 return (
                 <HStack key={coord.id}>
-                    <Box>
-                        <Text fontSize='sm' >{coord.lat}, {coord.long}</Text>
-                    </Box>
+                    <LinkBox>
+                        <Link to={`/coordinates/${coord.id}`} state={{lat: coord.lat, long: coord.long}}>
+                            <LinkOverlay><Text fontSize='sm' >{coord.lat}, {coord.long}</Text></LinkOverlay>
+                        </Link>  
+                    </LinkBox>
                     <Spacer />
-                    <Box>
-                        <Image src={`/weather-symbols/symbol-${coord.weatherSymbolNum}.png`} boxSize='48px' borderRadius='full' alt='weather symbol' />
-                    </Box>
-                    <Box textAlign='center' pl='2'>
-                        <Box><Text fontSize='xl' fontWeight='bold'>{coord.minTemp}&deg;</Text></Box>
-                        <Box><Text fontSize='xs'>Min Temp</Text></Box>
-                    </Box>
-                    <Box textAlign='center' pl='2'>
-                        <Box><Text fontSize='xl' fontWeight='bold'>{coord.maxTemp}&deg;</Text></Box>
-                        <Box><Text fontSize='xs'>Max Temp</Text></Box>
-                    </Box>
+                        <LinkBox>
+                            <Link to={`/coordinates/${coord.id}`} state={{lat: coord.lat, long: coord.long}}>
+                                <Image src={`/weather-symbols/symbol-${coord.weatherSymbolNum}.png`} boxSize='48px' borderRadius='full' alt='weather symbol' />
+                            </Link>
+                        </LinkBox>
+                        <LinkBox textAlign='center' pl='2'>
+                            <Link to={`/coordinates/${coord.id}`} state={{lat: coord.lat, long: coord.long}}>
+                                <Box><Text fontSize='xl' fontWeight='bold'>{coord.minTemp}&deg;</Text></Box>
+                                <Box><Text fontSize='xs'>Min Temp</Text></Box>                     
+                            </Link>
+                        </LinkBox>
+                        <LinkBox textAlign='center' pl='2'>
+                            <Link to={`/coordinates/${coord.id}`} state={{lat: coord.lat, long: coord.long}}>
+                                <Box><Text fontSize='xl' fontWeight='bold'>{coord.maxTemp}&deg;</Text></Box>
+                                <Box><Text fontSize='xs'>Max Temp</Text></Box>
+                            </Link>
+                        </LinkBox>
                     <Spacer />
                     <>
                         <CreateOrEditOrDeleteModal coords={coord} updateCoords={updateCoords} />

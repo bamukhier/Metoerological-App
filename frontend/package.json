@@ -11,11 +11,13 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.22.0",
+    "chakra-paginator": "^0.7.3",
     "framer-motion": "^4.1.17",
     "nanoid": "^3.1.29",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-router-dom": "^6.6.0",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2"
   },
