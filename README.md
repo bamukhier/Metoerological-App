@@ -1,6 +1,6 @@
 # 🌍 Metoerological App
 <p align='center'>
-<img width="800" height="400" src="https://user-images.githubusercontent.com/65918738/209467045-63979dce-a130-4ca3-a21e-c30ae4d1cb9f.png">
+<img width="900" height="450" src="https://user-images.githubusercontent.com/65918738/209467045-63979dce-a130-4ca3-a21e-c30ae4d1cb9f.png">
 </p>
 
 A simple -yet neat!- web app for tracking the weather forcasts for user-specified coordinates and [Saudi Arabia cities](https://github.com/homaily/Saudi-Arabia-Regions-Cities-and-Districts) using the Mateomatics API. It's built with Django, DRF, and React.
