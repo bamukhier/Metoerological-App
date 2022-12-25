@@ -16,6 +16,7 @@ const {colorMode, toggleColorMode} = useColorMode()
                         bgGradient='linear(to right, #8360c3, #2ebf91)' bgClip='text'>Meteorological App</Heading>
         <Routes>
           <Route path='/coordinates/:coordsId' element={<CoordinatesDetails />} />
+          <Route path='/cities/:coordsId' element={<CoordinatesDetails />} />
           <Route index path='/' element={<Home />} />
         </Routes>
     </VStack>

@@ -49,7 +49,6 @@ const combineAllForcastsWithCoords = responses => {
 
 const fetchAllForcasts = async () => {
   const reqURLs = coords.map(coords => queryURLBuilder(coords))
-  console.log(reqURLs)
   await Promise.all(reqURLs.map(url => axios.get(url)))
   .then(function(res){
     setWeatherCoords(combineAllForcastsWithCoords(res))

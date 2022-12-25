@@ -1,9 +1,13 @@
 import React from 'react'
 import { Link } from "react-router-dom";
-import { VStack, HStack, Text, StackDivider, Spacer, Box, LinkBox, LinkOverlay, Image } from "@chakra-ui/react";
+import { VStack, HStack, Text, StackDivider, Spacer, Box, LinkBox, Image, useDisclosure, Button } from "@chakra-ui/react";
 import CreateOrEditOrDeleteModal from './CreateOrEditOrDeleteModal'
 import LoadingSpinner from './LoadingSpinner'
+import { FaSearch } from 'react-icons/fa';
+import SearchDrawer from './SearchDrawer';
 function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
+    const {isOpen, onOpen, onClose} = useDisclosure()
+
     if (!coords.length){
         return (
             <LoadingSpinner />
@@ -14,6 +18,9 @@ function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
         <Box flex width='100%' maxWidth={{base: '90vw', md: '70vw', xl: '50vw'}}>
             <Box mb='2' mt='8'>
                 <CreateOrEditOrDeleteModal addCoords={addCoords} />
+                <Button ml={2} px={4} leftIcon={<FaSearch />} onClick={onOpen} fontSize='lg'>
+                        Search
+                </Button>
             </Box>
         <VStack divider={<StackDivider />} p='3' borderWidth='thin' borderColor='gray.200' 
             borderRadius='xl'  alignItems='stretch'>
@@ -22,7 +29,7 @@ function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
                 <HStack key={coord.id}>
                     <LinkBox>
                         <Link to={`/coordinates/${coord.id}`} state={{lat: coord.lat, long: coord.long}}>
-                            <LinkOverlay><Text fontSize='sm' >{coord.lat}, {coord.long}</Text></LinkOverlay>
+                            <Text fontSize='sm' >{coord.lat}, {coord.long}</Text>
                         </Link>  
                     </LinkBox>
                     <Spacer />
@@ -52,6 +59,7 @@ function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
                 </HStack>
             )})}
         </VStack>
+        <SearchDrawer isOpen={isOpen} onClose={onClose} />
         </Box>
     )
 }

@@ -1,4 +1,4 @@
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useMatch } from "react-router-dom";
 import { Button, Box, VStack, Heading, Text, Spacer } from "@chakra-ui/react";
 import {FaArrowLeft} from 'react-icons/fa'
 import axios from 'axios'
@@ -14,6 +14,7 @@ function CoordinatesDetails() {
     const long = location.state?.long
     const [htmlURLs, setHtmlURLs] = useState([])
     const weatherParams = ['Temperature', 'Precipitation', 'Wind Speed', 'Wind Direction', 'Weather Icon']
+    const isCity = useMatch('/cities/:id')
 
     const queryURLBuilder = () => {
         const mateomaticsToken = process.env.REACT_APP_MATEOMATICS_TOKEN
@@ -61,6 +62,7 @@ function CoordinatesDetails() {
                 ) : (
                     <>
                         <Heading as='h1' mb='4' fontWeight='bold' size='lg' >Hourly Weather Data</Heading>
+                        {isCity && <Heading as='h2' mb='8' size='sm' fontWeight='normal' >City: <Text fontWeight='bold' display='inline'>{location.state.nameEn} - {location.state.nameAr}</Text></Heading>}
                         <Heading as='h2' mb='8' size='sm' fontWeight='normal' >Latitude: <Text fontWeight='bold' display='inline'>{lat}</Text> - Longitude: <Text fontWeight='bold' display='inline'>{long}</Text> </Heading>
                         <Heading as='h3' mb='12' fontWeight='thin' size='xs' >{new Date().toLocaleDateString("en-GB", {weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'})} </Heading>
                         <Spacer />

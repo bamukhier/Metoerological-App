@@ -99,7 +99,7 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
         {coords && !deleteMode
         ? <IconButton mx='8' icon={<FaEdit />} isRound='true' onClick={onOpen}/>
         : coords && deleteMode ? <IconButton icon={<FaTrash />} isRound='true' onClick={onOpen}/>
-                      : <Button leftIcon={<FaPlus />} type='submit' colorScheme='green' px='4' onClick={onOpen}>Add Coordinates</Button>
+                      : <Button leftIcon={<FaPlus />} type='submit' colorScheme='green' px='4' onClick={onOpen}>Add New</Button>
         }
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
