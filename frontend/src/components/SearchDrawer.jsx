@@ -53,7 +53,7 @@ function SearchDrawer({isOpen, onClose}) {
             setLoadingResults(true)
             const {data} = await axios.get(`/api/findCoords/?search=${debouncedSearchText}`)
             setLoadingResults(false)
-            setSearchResults(data)
+            setSearchResults(data.results)
 
         } catch (error) {
             toast({

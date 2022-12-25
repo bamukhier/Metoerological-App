@@ -1,5 +1,6 @@
 from rest_framework import viewsets, filters
 from drf_multiple_model.viewsets import ObjectMultipleModelAPIViewSet
+from drf_multiple_model.pagination import MultipleModelLimitOffsetPagination
 from .models import Coordinate, City
 from .serializers import CoordinateSerializer, CitySerializer
 
@@ -16,6 +17,11 @@ class CityViewset(viewsets.ModelViewSet):
     # filter_backends = [filters.SearchFilter]
     # search_fields = [name_en', 'name_ar', 'lat', 'long']
 
+
+# This a helper class to define LimitOffsetPagination for def-multiple-model
+class LimitPagination(MultipleModelLimitOffsetPagination):
+    default_limit = 10
+
 class SearchAPIView(ObjectMultipleModelAPIViewSet):
     querylist = [
         {'queryset': Coordinate.objects.all(), 'serializer_class': CoordinateSerializer},
@@ -23,3 +29,4 @@ class SearchAPIView(ObjectMultipleModelAPIViewSet):
     ]
     filter_backends = [filters.SearchFilter]
     search_fields = ['lat', 'long']
+    pagination_class = LimitPagination

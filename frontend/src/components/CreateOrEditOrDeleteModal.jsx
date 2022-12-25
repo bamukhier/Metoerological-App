@@ -56,6 +56,8 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
                 title: 'Coordinates Updated Successfully',
                 duration: '5000'
             })
+            setLatitude('')
+            setLongitude('')
             onClose()
         }
 
@@ -82,6 +84,8 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
                 title: 'New Coordinates Added Successfully',
                 duration: '5000'
             })
+            setLatitude('')
+            setLongitude('')
             onClose()
         }
     }
@@ -99,7 +103,7 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
         {coords && !deleteMode
         ? <IconButton mx='8' icon={<FaEdit />} isRound='true' onClick={onOpen}/>
         : coords && deleteMode ? <IconButton icon={<FaTrash />} isRound='true' onClick={onOpen}/>
-                      : <Button leftIcon={<FaPlus />} type='submit' colorScheme='green' px='4' onClick={onOpen}>Add New</Button>
+                      : <Button leftIcon={<FaPlus />} type='submit' bg="green.500" _hover={{bg: "green.700",}} color='white' px='5' onClick={onOpen}>Add New</Button>
         }
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

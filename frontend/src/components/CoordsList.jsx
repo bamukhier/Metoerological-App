@@ -1,30 +1,31 @@
 import React from 'react'
 import { Link } from "react-router-dom";
-import { VStack, HStack, Text, StackDivider, Spacer, Box, LinkBox, Image, useDisclosure, Button } from "@chakra-ui/react";
+import { VStack, HStack, Text, StackDivider, Spacer, Box, LinkBox, Image, useDisclosure, Button, Center, Flex } from "@chakra-ui/react";
 import CreateOrEditOrDeleteModal from './CreateOrEditOrDeleteModal'
 import LoadingSpinner from './LoadingSpinner'
 import { FaSearch } from 'react-icons/fa';
 import SearchDrawer from './SearchDrawer';
-function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
+import SimplePaginator from './SimplePaginator';
+function CoordsList({coords, fetchCoords, handleOffsetChange, addCoords, updateCoords, deleteCoords}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
 
-    if (!coords.length){
-        return (
-            <LoadingSpinner />
-        )
-    }
+    // if (!coords.length){
+    //     return (
+    //         <LoadingSpinner />
+    //     )
+    // }
 
     return (
-        <Box flex width='100%' maxWidth={{base: '90vw', md: '70vw', xl: '50vw'}}>
+        <Box flex width='100%' maxWidth={{base: '90vw', md: '75vw', xl: '60vw'}}>
             <Box mb='2' mt='8'>
                 <CreateOrEditOrDeleteModal addCoords={addCoords} />
-                <Button ml={2} px={4} leftIcon={<FaSearch />} onClick={onOpen} fontSize='lg'>
+                <Button ml={2} px={5} leftIcon={<FaSearch />} onClick={onOpen} fontSize='lg'>
                         Search
                 </Button>
             </Box>
-        <VStack divider={<StackDivider />} p='3' borderWidth='thin' borderColor='gray.200' 
+        <VStack divider={<StackDivider />} p='3' mb='2' borderWidth='thin' borderColor='gray.200' 
             borderRadius='xl'  alignItems='stretch'>
-            {coords.map( coord => {
+            {coords.length ? coords.map( coord => {
                 return (
                 <HStack key={coord.id}>
                     <LinkBox>
@@ -57,8 +58,11 @@ function CoordsList({coords, addCoords, updateCoords, deleteCoords}) {
                     </>
                     
                 </HStack>
-            )})}
+            )}) 
+                : <Flex justify="center" align="center"><LoadingSpinner /></Flex>
+            }
         </VStack>
+        <SimplePaginator fetchCoords={fetchCoords} handleOffsetChange={handleOffsetChange} />
         <SearchDrawer isOpen={isOpen} onClose={onClose} />
         </Box>
     )
