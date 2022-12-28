@@ -3,7 +3,7 @@
 <img width="700" height="350" src="https://user-images.githubusercontent.com/65918738/209467045-63979dce-a130-4ca3-a21e-c30ae4d1cb9f.png">
 </p>
 
-A simple -yet neat!- web app for tracking the weather forcasts for user-specified coordinates and [Saudi Arabia cities](https://github.com/homaily/Saudi-Arabia-Regions-Cities-and-Districts) using the Mateomatics API. It's built with Django, DRF, and React.
+A simple and neat web app for tracking the weather forcasts for user-specified coordinates and [Saudi-Arabian cities](https://github.com/homaily/Saudi-Arabia-Regions-Cities-and-Districts) using the Mateomatics API. It's built with Django, DRF, and React.
 
 ## Getting Started
 
@@ -25,8 +25,8 @@ A simple -yet neat!- web app for tracking the weather forcasts for user-specifie
          * If faced any error regarding dependencies, run `npm install --legacy-peer-deps`
     * Using your Mateomatics API credentials, get your auth token from <https://login.meteomatics.com/api/v1/token>
         * if you don't have Mateomatics API account, [sign-up for a free test account](https://www.meteomatics.com/en/sign-up-weather-api-test-account/)
-    5. add your auth token inside `frontend/.env` file, between quotation marks in `REACT_APP_MATEOMATICS_TOKEN` variable
-    6. run the frontend server `npm run start`
+    * add your auth token inside `frontend/.env` file, between quotation marks in `REACT_APP_MATEOMATICS_TOKEN` variable
+    * run the frontend server `npm run start`
     
 ## Areas of Improvement
 Since this is a proof-of-concept app, it's by no means should be used in production. To optimize it for production, we could do the following for example:

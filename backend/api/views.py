@@ -7,7 +7,9 @@ from .serializers import CoordinateSerializer, CitySerializer
 class CoordinateViewset(viewsets.ModelViewSet):
     queryset = Coordinate.objects.all()
     serializer_class = CoordinateSerializer
-    # filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['lat', 'long', '-updated_at']
+    ordering = ('-updated_at')
     # search_fields = ['lat', 'long']
 
 class CityViewset(viewsets.ModelViewSet):
