@@ -1,6 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+
 
 # as we changed auth model to customUser, we need to customize the manager for admin site
 class CustomUserManager(BaseUserManager):
@@ -31,7 +33,7 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-# we added cutom user to use email instead of username as the credential
+# added cutom user to use email instead of username as the credential
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
@@ -43,9 +45,11 @@ class CustomUser(AbstractUser):
 
 
 class Coordinate(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='coordinates', on_delete=models.CASCADE)
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     long = models.DecimalField(max_digits=9, decimal_places=6)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class City(models.Model):
     region_id = models.IntegerField()
