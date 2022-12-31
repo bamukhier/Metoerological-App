@@ -22,15 +22,15 @@ A simple and neat web app for tracking the weather forcasts for user-specified c
     * open a new terminal
     * `cd ./frontend`
     * install required packages `npm install` (may take some time)
-         * If faced any error regarding dependencies, run `npm install --legacy-peer-deps`
+         * If faced with any errors regarding dependencies, run `npm install --legacy-peer-deps`
     * Using your Mateomatics API credentials, get your auth token from <https://login.meteomatics.com/api/v1/token>
         * if you don't have Mateomatics API account, [sign-up for a free test account](https://www.meteomatics.com/en/sign-up-weather-api-test-account/)
     * add your auth token inside `frontend/.env` file, between quotation marks in `REACT_APP_MATEOMATICS_TOKEN` variable
     * run the frontend server `npm run start`
     
 ## Areas of Improvement
-Since this is a proof-of-concept app, it's by no means should be used in production. To optimize it for production, we could do the following for example:
-* Implement user & auth modules
+Since this is a proof-of-concept app, it's by no means should be used in production. To optimize it for production, we could do the following, for example:
+* ~~Implement user & auth modules~~ ✅
 * Set validations in API routes and models, similar to what's been written in client-side
 * Write unit & e2e testing
 * Serve the frontend from the optimized `build` folder instead of the `src`

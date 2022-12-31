@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Coordinate, City, CustomUser
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,10 +17,26 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+# this is for adding user email in the payload of auth tokens
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['user_id'] = user.id
+        token['email'] = user.email
+        # ...
+        return token
+
+
 class CoordinateSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(read_only=True)
+
     class Meta:
         model = Coordinate
-        fields = ('id', 'lat', 'long', 'updated_at')
+        fields = ('id', 'user', 'label', 'lat', 'long', 'updated_at')
+
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:

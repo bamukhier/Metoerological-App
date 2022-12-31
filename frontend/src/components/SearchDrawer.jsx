@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
-import { Drawer, DrawerOverlay, DrawerHeader, DrawerBody, DrawerContent, DrawerCloseButton, Box, Input, Text, useToast, InputGroup, InputLeftElement, Divider, Center, LinkBox } from "@chakra-ui/react"
-import axios from "axios"
+import { Drawer, DrawerOverlay, DrawerHeader, DrawerBody, DrawerContent, DrawerCloseButton, Box, Input, Text, useToast, InputGroup, InputLeftElement, Divider, Center, LinkBox, Flex } from "@chakra-ui/react"
+import axiosInstance from '../utils/axios'
 import { useDebounce } from "use-debounce";
 import { FaSearch } from 'react-icons/fa'
 import LoadingSpinner from "./LoadingSpinner"
 import SearchListItem from "./SearchListItem"
 import { Link } from "react-router-dom";
+import EmptyPlaceholder from "./EmptyPlaceholder";
 
-function SearchDrawer({isOpen, onClose}) {
+function SearchDrawer({isOpen, onClose, isLoading}) {
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [loadingResults, setLoadingResults] = useState(false)
@@ -51,7 +52,7 @@ function SearchDrawer({isOpen, onClose}) {
 
         try {
             setLoadingResults(true)
-            const {data} = await axios.get(`/api/findCoords/?search=${debouncedSearchText}`)
+            const {data} = await axiosInstance.get(`/findCoords/?search=${debouncedSearchText}`)
             setLoadingResults(false)
             setSearchResults(data.results)
 
@@ -89,7 +90,7 @@ function SearchDrawer({isOpen, onClose}) {
                             pointerEvents='none'
                             children={<FaSearch style={{ color: "silver", fontSize: "1.5em" }} />}
                             />
-                            <Input value={searchTerm} variant='filled' onChange={e => setSearchTerm(e.target.value.trim())} placeholder='Search by latitude or longitude'/>
+                            <Input value={searchTerm} variant='filled' tabIndex='1' onChange={e => setSearchTerm(e.target.value.trim())} placeholder='Search by latitude or longitude'/>
                         </InputGroup>
                     </Box>
 
@@ -109,19 +110,19 @@ function SearchDrawer({isOpen, onClose}) {
                                     <Box>
                                         {searchResults.Coordinate?.length > 0 ? searchResults.Coordinate.map(coords => (
                                             <LinkBox>
-                                                <Link to={`/coordinates/${coords.id}`} state={{lat: coords.lat, long: coords.long}}>
+                                                <Link to={`/coordinates/${coords.id}`} state={{lat: coords.lat, long: coords.long, label: coords.label}}>
                                                     <SearchListItem key={coords.id} coords={coords} />
                                                 </Link>
                                             </LinkBox>
                                         
                                         )) : (
-                                            <Text fontSize='lg' pt={2} fontStyle='italic'>No coordinates were found</Text>
+                                            <Flex justify="center" align="center"><EmptyPlaceholder /></Flex>
 
                                         )}
                                     </Box>
-                                    <Box pt={4} pb={1}>
+                                    <Box pt={3} pb={1}>
                                         <Divider color="gray.700" />
-                                        <Text fontSize='lg' fontWeight='semibold' pt={1} px={1}>Saudi Cities</Text>
+                                        <Text fontSize='lg' fontWeight='semibold' pt={3} px={1}>Saudi Cities</Text>
                                     </Box>
                                     <Box>
                                         {searchResults.City?.length > 0 ? searchResults.City.map(coords => (
@@ -131,7 +132,7 @@ function SearchDrawer({isOpen, onClose}) {
                                                 </Link>
                                             </LinkBox>
                                         )) : (
-                                            <Text fontSize='lg' pt={2} fontStyle='italic'>No cities were found</Text>
+                                            <Flex justify="center" align="center"><EmptyPlaceholder /></Flex>
 
                                         )} 
                                     </Box>

@@ -53,7 +53,7 @@ function CoordinatesDetails() {
         <Box flex width='100%' maxWidth={{base: '90vw', md: '70vw', xl: '50vw'}}>
             <Box mt={8}>
                 <Link to='/'>
-                    <Button leftIcon={<FaArrowLeft />} borderRadius='8px' alignSelf='flex-start'>Homepage</Button>
+                    <Button leftIcon={<FaArrowLeft />} borderRadius='8px' alignSelf='flex-start'>Home</Button>
                 </Link>
             </Box>
             <VStack p={2} >
@@ -61,8 +61,12 @@ function CoordinatesDetails() {
                     <LoadingSpinner />
                 ) : (
                     <>
-                        <Heading as='h1' mb='4' fontWeight='bold' size='lg' >Hourly Weather Data</Heading>
-                        {isCity && <Heading as='h2' mb='8' size='sm' fontWeight='normal' >City: <Text fontWeight='bold' display='inline'>{location.state.nameEn} - {location.state.nameAr}</Text></Heading>}
+                        <Heading as='h1' mb='6' fontWeight='bold' size='lg' >Hourly Weather Data</Heading>
+                        {isCity ? 
+                            <Heading as='h2' mb='8' size='sm' fontWeight='normal' >City: <Text fontWeight='bold' display='inline'>{location.state.nameEn} - {location.state.nameAr}</Text></Heading>
+                         :  
+                            <Heading as='h2' mb='8' size='sm' fontWeight='normal' >Label: <Text fontWeight='bold' display='inline'>{location.state.label}</Text></Heading>
+                        }
                         <Heading as='h2' mb='8' size='sm' fontWeight='normal' >Latitude: <Text fontWeight='bold' display='inline'>{lat}</Text> - Longitude: <Text fontWeight='bold' display='inline'>{long}</Text> </Heading>
                         <Heading as='h3' mb='12' fontWeight='thin' size='xs' >{new Date().toLocaleDateString("en-GB", {weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'})} </Heading>
                         <Spacer />

@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from drf_multiple_model.viewsets import ObjectMultipleModelAPIViewSet
 from drf_multiple_model.pagination import MultipleModelLimitOffsetPagination
 from .models import Coordinate, City, CustomUser
-from .serializers import CoordinateSerializer, CitySerializer, RegisterUserSerializer
+from .serializers import CoordinateSerializer, CitySerializer, RegisterUserSerializer, CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class RegisterUser(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
@@ -23,16 +25,25 @@ class BlacklistTokenView(APIView):
             refresh_token = request.data['refresh_token']
             token = RefreshToken(refresh_token)
             token.blacklist()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
 
 class CoordinateViewset(viewsets.ModelViewSet):
     queryset = Coordinate.objects.all()
     serializer_class = CoordinateSerializer
     filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['lat', 'long', '-updated_at']
+    ordering_fields = ['label', 'lat', 'long', '-updated_at']
     ordering = ('-updated_at')
     # search_fields = ['lat', 'long']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
     
 
 

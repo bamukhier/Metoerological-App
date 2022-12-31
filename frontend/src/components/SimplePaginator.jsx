@@ -68,6 +68,7 @@ function SimplePaginator({fetchCoords, handleOffsetChange}) {
     fetchCoords(pageSize, offset).then((coordsCount) => {
       handleOffsetChange(offset)
       setCoordsTotal(coordsCount);
+      console.log(coordsTotal)
     });
   }, [currentPage, pageSize, offset]);
 
@@ -80,29 +81,33 @@ function SimplePaginator({fetchCoords, handleOffsetChange}) {
   };
 
   return (
-      <Paginator
-        isDisabled={isDisabled}
-        activeStyles={activeStyles}
-        innerLimit={innerLimit}
-        currentPage={currentPage}
-        outerLimit={outerLimit}
-        normalStyles={normalStyles}
-        separatorStyles={separatorStyles}
-        pagesQuantity={pagesQuantity}
-        onPageChange={handlePageChange}
-      >
-        <Container align="center" justify="center" w="full" p={4}>
-          <Previous mr={6}>
-            Previous
-            {/* Or an icon from `react-icons` */}
-          </Previous>
-          <PageGroup isInline align="center" />
-          <Next ml={6}>
-            Next
-            {/* Or an icon from `react-icons` */}
-          </Next>
-        </Container>
+    <>
+      {coordsTotal > 5 ? 
+        <Paginator
+          isDisabled={isDisabled}
+          activeStyles={activeStyles}
+          innerLimit={innerLimit}
+          currentPage={currentPage}
+          outerLimit={outerLimit}
+          normalStyles={normalStyles}
+          separatorStyles={separatorStyles}
+          pagesQuantity={pagesQuantity}
+          onPageChange={handlePageChange}
+        >
+          <Container align="center" justify="center" w="full" p={4}>
+            <Previous mr={6}>
+              Previous
+              {/* Or an icon from `react-icons` */}
+            </Previous>
+            <PageGroup isInline align="center" />
+            <Next ml={6}>
+              Next
+              {/* Or an icon from `react-icons` */}
+            </Next>
+          </Container>
       </Paginator>
+     : null }
+    </>
   );
 };
 

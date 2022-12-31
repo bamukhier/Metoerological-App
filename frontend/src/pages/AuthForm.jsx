@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Box, Flex, Input, Button, VStack, useToast, Text } from '@chakra-ui/react'
 import { useNavigate, useMatch, Link } from 'react-router-dom'
 import axiosInstance from '../utils/axios'
+import AuthContext from '../components/AuthContext'
 
 const AuthForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isloading, setIsloading] = useState(false)
+  const { setAccessToken, setRefreshToken } = useContext(AuthContext)
+
   const navigateTo = useNavigate()
   const isSignInRoute = useMatch('/login')
   const toast = useToast()
@@ -16,12 +19,14 @@ const AuthForm = () => {
     setIsloading(true)
     if (isSignInRoute){
         try {
-        const res = await axiosInstance.post('/api/token', { email, password })
-        if (res) {
+        const {data} = await axiosInstance.post('/token', { email, password })
+        if (data) {
             setIsloading(false)
-            console.log(res)
-            localStorage.setItem('access_token', res.data.access)
-            localStorage.setItem('refresh_token', res.data.refresh)
+            console.log(data)
+            setAccessToken(data.access)
+            setRefreshToken(data.refresh)
+            localStorage.setItem('access_token', data.access)
+            localStorage.setItem('refresh_token', data.refresh)
             axiosInstance.defaults.headers['Authorization'] = 'JWT ' + localStorage.getItem('access_token')
             navigateTo('/')
         }
@@ -36,10 +41,9 @@ const AuthForm = () => {
         }
     } else {
         try {
-          const res = await axiosInstance.post('/api/user/register', { email, password })
+          const res = await axiosInstance.post('/user/register', { email, password })
           if (res) {
             setIsloading(false)
-            console.log(res)
             navigateTo('/login')
           }
         } catch (e) {
@@ -93,9 +97,9 @@ const AuthForm = () => {
         <Box>
             {isSignInRoute
             ? (
-                <Link to='/signup'><Text fontWeight='semibold'>Don't have an account?</Text></Link>
+                <Link to='/signup'><Text fontWeight='semibold' textDecoration='underline'>Don't have an account?</Text></Link>
             ) : (
-                <Link to='/login'><Text fontWeight='semibold'>Have an account?</Text></Link>
+                <Link to='/login'><Text fontWeight='semibold' textDecoration='underline'>Have an account?</Text></Link>
             )}
         </Box>
       </Flex>

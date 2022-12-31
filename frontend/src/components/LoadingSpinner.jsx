@@ -6,10 +6,11 @@ function LoadingSpinner() {
             <Badge p={8} colorScheme='gray' borderRadius='xl' textAlign='center'>
                 <Spinner
                     thickness='4px'
-                    speed='0.65s'
+                    speed='1s'
                     emptyColor='gray.200'
                     color='blue.500'
                     size='xl'
+                    mx={12}
                 />
                 <Box><Text mt='4' fontWeight='medium'>Loading...</Text></Box>
                 

@@ -46,6 +46,7 @@ class CustomUser(AbstractUser):
 
 class Coordinate(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='coordinates', on_delete=models.CASCADE)
+    label = models.CharField(max_length=100)
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     long = models.DecimalField(max_digits=9, decimal_places=6)
     updated_at = models.DateTimeField(auto_now=True)

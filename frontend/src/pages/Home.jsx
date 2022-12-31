@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CoordsList from '../components/CoordsList'
 import axios from 'axios'
+import axiosInstance from '../utils/axios'
 import { useToast } from '@chakra-ui/react'
 
 function Home() {
@@ -10,15 +11,18 @@ const toast = useToast()
 const [coords, setCoords] = useState([])
 const [weatherCoords, setWeatherCoords] = useState([])
 const [currentOffset, setCurrentOffset] = useState(0)
+const [isloading, setIsloading] = useState(false)
 
 
 const fetchCoords = async (limit, offset) => {
   try {
-    const { data } = await axios.get(`/api/coords/?limit=${limit}&offset=${offset}`)
+    setIsloading(true)
+    const { data } = await axiosInstance.get(`/coords/?limit=${limit}&offset=${offset}`)
     console.log(data)
     setCoords(data.results)
     return data.count
   } catch (err) {
+    setIsloading(false)
     console.log(err)
     toast({
         status: 'error',
@@ -51,12 +55,15 @@ const combineAllForcastsWithCoords = responses => {
 }
 
 const fetchAllForcasts = async () => {
+  setIsloading(true)
   const reqURLs = coords.map(coords => queryURLBuilder(coords))
   await Promise.all(reqURLs.map(url => axios.get(url)))
   .then(function(res){
+    setIsloading(false)
     setWeatherCoords(combineAllForcastsWithCoords(res))
   })
   .catch(function(err){
+    setIsloading(false)
     console.log(err)
     toast({
         status: 'error',
@@ -95,19 +102,22 @@ const fetchAllForcasts = async () => {
 
 const addCoords = async newCoords => {
   try {
-    const { data } = await axios.post('api/coords/', newCoords)
+    setIsloading(true)
+    await axiosInstance.post('/coords/', newCoords)
     fetchCoords(5, currentOffset)
     // setCoords([...coords, data])
     // const coordWithForcast = await fetchSingleForcast(data)
     // setWeatherCoords([...weatherCoords, coordWithForcast])
   } catch (err) {
+    setIsloading(false)
     console.log(err)
   }
 }
 
 const updateCoords = async (id, newCoords) => {
   try {
-    const { data } = await axios.put(`api/coords/${id}/`, newCoords)
+    setIsloading(true)
+    await axiosInstance.put(`/coords/${id}/`, newCoords)
     fetchCoords(5, currentOffset)
     // const updatedList = coords.map( coord => coord.id !== id ? coord : data)
     // setCoords(updatedList)
@@ -117,19 +127,22 @@ const updateCoords = async (id, newCoords) => {
 
 
   } catch (err) {
+    setIsloading(false)
     console.log(err)
   }
 }
 
 const deleteCoords = async id => {
+  setIsloading(true)
   try {
-    await axios.delete(`api/coords/${id}/`)
-      fetchCoords(5, currentOffset)
+    await axiosInstance.delete(`/coords/${id}/`)
+    fetchCoords(5, currentOffset)
     // const newCoords = coords.filter(coord => coord.id !== id)
     // setCoords(newCoords)
     // const newWeatherCoords = weatherCoords.filter(coord => coord.id !== id)
     // setWeatherCoords(newWeatherCoords)
   } catch (err) {
+    setIsloading(false)
     console.log(err)
   }
 }
@@ -144,7 +157,7 @@ useEffect( () => {
 
   return (
     <>
-        <CoordsList coords={weatherCoords} fetchCoords={fetchCoords} handleOffsetChange={setCurrentOffset} addCoords={addCoords} updateCoords={updateCoords} deleteCoords={deleteCoords}/>
+        <CoordsList coords={weatherCoords} isLoading={isloading} fetchCoords={fetchCoords} handleOffsetChange={setCurrentOffset} addCoords={addCoords} updateCoords={updateCoords} deleteCoords={deleteCoords}/>
     </>
 
   );

@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useDisclosure, useToast, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Box, Input } from '@chakra-ui/react'
+import { useDisclosure, useToast, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Box, Input, Tooltip } from '@chakra-ui/react'
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 
 const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords, deleteCoords}) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast()
+    const [label, setLabel] = useState()
     const [latitude, setLatitude] = useState()
     const [longitude, setLongitude] = useState()
 
-    const validateCoords = (lat, long) => {
-        if (!lat || !long) {
+    const validateCoords = (label, lat, long) => {
+        if (!label || !lat || !long) {
             toast({
                 status: 'error',
-                title: 'Enter both latitude and longitude',
+                title: 'All field are required. Enter any missing field',
                 duration: '5000'
             })
             return false
@@ -41,12 +42,12 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
             return false
         }
 
-        return {lat: numLat.toFixed(6), long: numLong.toFixed(6)}
+        return {label, lat: numLat.toFixed(6), long: numLong.toFixed(6)}
 
     }
 
-    const handleEdit = async (id, latitude, longitude) => {
-        const validatedCoords = validateCoords(latitude, longitude)
+    const handleEdit = async (id, label, latitude, longitude) => {
+        const validatedCoords = validateCoords(label, latitude, longitude)
         if (!validatedCoords){
             return
         } else {
@@ -58,6 +59,7 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
             })
             setLatitude('')
             setLongitude('')
+            setLabel('')
             onClose()
         }
 
@@ -73,8 +75,8 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
         onClose()
     }
 
-    const handleAdd = async (latitude, longitude) => {
-        const validatedCoords = validateCoords(latitude, longitude)
+    const handleAdd = async (label, latitude, longitude) => {
+        const validatedCoords = validateCoords(label, latitude, longitude)
         if (!validatedCoords){
             return
         } else {
@@ -86,12 +88,14 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
             })
             setLatitude('')
             setLongitude('')
+            setLabel('')
             onClose()
         }
     }
 
     useEffect(() => {
         if (coords){
+            setLabel(coords.label)
             setLatitude(coords.lat)
             setLongitude(coords.long)
         }
@@ -101,9 +105,14 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
   return (
     <>
         {coords && !deleteMode
-        ? <IconButton mx='8' icon={<FaEdit />} isRound='true' onClick={onOpen}/>
-        : coords && deleteMode ? <IconButton icon={<FaTrash />} isRound='true' onClick={onOpen}/>
-                      : <Button leftIcon={<FaPlus />} type='submit' bg="green.500" _hover={{bg: "green.700",}} color='white' px='5' onClick={onOpen}>Add New</Button>
+        ?   <Tooltip label="Edit Coordinates" aria-label='A tooltip'>                     
+                <IconButton mx='8' icon={<FaEdit />} isRound='true' onClick={onOpen}/>
+            </Tooltip>
+        : coords && deleteMode 
+        ?   <Tooltip label="Delete Coordinates" aria-label='A tooltip'>  
+                <IconButton icon={<FaTrash />} isRound='true' onClick={onOpen}/>
+            </Tooltip>
+        : <Button leftIcon={<FaPlus />} type='submit' bg="green.500" _hover={{bg: "green.700",}} color='white' px='5' onClick={onOpen}>Add New</Button>
         }
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -115,10 +124,13 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
               ? (
                 <>
                 <Box>
-                    Latitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={latitude} onChange={(e) => setLatitude(e.target.value)}/>
+                    Label: <Input tabIndex='1' variant='filled' mt='1' mb='3' placeholder='a descriptive name' value={label} onChange={(e) => setLabel(e.target.value)}/>
                 </Box>
                 <Box mt='2'>
-                    Longitude: <Input variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={longitude} onChange={(e) => setLongitude(e.target.value)}/>
+                    Latitude: <Input tabIndex='2' variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={latitude} onChange={(e) => setLatitude(e.target.value.trim())}/>
+                </Box>
+                <Box mt='2'>
+                    Longitude: <Input tabIndex='3' variant='filled' mt='1' mb='3' placeholder='in format (-)xx.xxxxxx' value={longitude} onChange={(e) => setLongitude(e.target.value.trim())}/>
                 </Box>
                 </>
               ) : (
@@ -136,9 +148,9 @@ const CreateOrEditOrDeleteModal = ({coords, addCoords, deleteMode, updateCoords,
               colorScheme={deleteMode? "red" : "green"}
               onClick={ 
                   coords && !deleteMode ? 
-                  () => {handleEdit(coords.id, latitude, longitude)} 
+                  () => {handleEdit(coords.id, label, latitude, longitude)} 
                   : coords && deleteMode ? () => {handleDelete(coords.id)} 
-                                : () => {handleAdd(latitude, longitude)}
+                                : () => {handleAdd(label, latitude, longitude)}
             }
             >
               {coords && !deleteMode ? 'Edit' : coords && deleteMode ? 'Delete' : 'Add'}

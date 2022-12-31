@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = 'http://127.0.0.1:8000'
+const baseURL = 'http://127.0.0.1:8000/api'
 
 const axiosInstance = axios.create({
     baseURL,
@@ -14,7 +14,11 @@ const axiosInstance = axios.create({
     },
 })
 
-//credit: https://github.com/veryacademy/YT-Django-DRF-Simple-Blog-Series-JWT-Part-3
+
+// this is to check if the access token is expired 
+// and fetch new one using refresh token and handle errors that may occure
+// credit: https://github.com/veryacademy/YT-Django-DRF-Simple-Blog-Series-JWT-Part-3
+
 axiosInstance.interceptors.response.use(
 	(response) => {
 		return response;
@@ -33,7 +37,7 @@ axiosInstance.interceptors.response.use(
 
 		if (
 			error.response.status === 401 &&
-			originalRequest.url === baseURL + 'token/refresh/'
+			originalRequest.url === baseURL + '/token/refresh'
 		) {
 			window.location.href = '/login/';
 			return Promise.reject(error);
@@ -55,7 +59,7 @@ axiosInstance.interceptors.response.use(
 
 				if (tokenParts.exp > now) {
 					return axiosInstance
-						.post('/token/refresh/', { refresh: refreshToken })
+						.post('/token/refresh', { refresh: refreshToken })
 						.then((response) => {
 							localStorage.setItem('access_token', response.data.access);
 							localStorage.setItem('refresh_token', response.data.refresh);
