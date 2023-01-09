@@ -4,7 +4,7 @@ from .views import CoordinateViewset, CityViewset, SearchAPIView, RegisterUser, 
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = routers.DefaultRouter()
-router.register('coords', CoordinateViewset)
+router.register('coords', CoordinateViewset, basename='coords')
 router.register('city', CityViewset)
 router.register('findCoords', SearchAPIView, basename='findCoords')
 

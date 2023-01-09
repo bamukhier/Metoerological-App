@@ -56,6 +56,7 @@ class City(models.Model):
     region_id = models.IntegerField()
     name_ar = models.CharField(max_length=100)
     name_en = models.CharField(max_length=100)
+    # use pointField
     lat = models.DecimalField(max_digits=11, decimal_places=8)
     long = models.DecimalField(max_digits=11, decimal_places=8)
 

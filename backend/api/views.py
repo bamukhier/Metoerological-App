@@ -35,7 +35,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class CoordinateViewset(viewsets.ModelViewSet):
-    queryset = Coordinate.objects.all()
     serializer_class = CoordinateSerializer
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['label', 'lat', 'long', '-updated_at']
@@ -44,6 +43,9 @@ class CoordinateViewset(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def get_queryset(self):
+        return Coordinate.objects.filter(user=self.request.user)
     
 
 
